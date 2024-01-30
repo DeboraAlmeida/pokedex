@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;500;600;700;800&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  font-family: 'Oxanium', monospace;
+}
+
+html, body {
+  overflow-x: hidden;
+}
+
+header {
+  width: 100%;
+  padding: 1rem;
+  background-color: #f00d;
+  border-bottom: 1px solid #000;
+}
