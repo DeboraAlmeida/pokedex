@@ -54,19 +54,21 @@ form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(to bottom, #03fc77, #fff);
-  border: .5px solid #03fc77;
+  background: linear-gradient(to bottom, var(--type-color), #fff, #fff);
+  border: .5px solid #ccc;
   border-radius: 1rem;
   box-shadow: 1px 1px 4px #aaa;
 }
 
 .poke__img {
-  width: 50%;
+  width: 75%;
   margin: .5rem auto;
+  filter: drop-shadow(1.5px 1.5px 2px #222);
 }
 
 .card__info {
   width: 100%;
+  aspect-ratio: 2/1;
   display: flex;
   justify-content: space-between;
   margin: .5rem auto;
@@ -76,13 +78,9 @@ form {
   width: 50%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   margin: .5rem .3rem .3rem .3rem;
   text-align: center;
-}
-
-.poke__number-box {
-  justify-content: center;
 }
 
 .poke__number {
@@ -90,10 +88,16 @@ form {
 }
 
 .poke__type {
-  background-color: #03fc7799;
+  background-color: var(--type-color);
+  box-shadow: .5px .5px 1px #333;
+  /* border: .3px solid #ccc; */
+  opacity: .7;
   border-radius: .5rem;
   width: 100%;
   margin: .2rem 0;
+  padding: .2rem;
+  font-size: .9rem;
+  font-weight: 600;
 }
 
 .poke__name {

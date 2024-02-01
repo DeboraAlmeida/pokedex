@@ -1,22 +1,22 @@
 const getTypeColor = type => {
-  const normal = '#f5f5f5';
+  const normal = '#84918d';
   return {
     normal,
-    fire: '#fddfdf',
-    grass: '#defde0',
-    ice: '#def3fd',
-    electric: '#fcf7de',
-    water: '#def3fd',
-    ground: '#f4e7da',
-    rock: '#d5d5d4',
-    fairy: '#fceaff',
-    poison: '#98d7a5',
-    bug: '#f8d5a3',
-    ghost: '#cac0f7',
-    dragon: '#97b3e6',
+    fire: '#eb542a',
+    grass: '#a1fc79',
+    ice: '#89bed9',
+    electric: '#fcc347',
+    water: '#4270d4',
+    ground: '#695833',
+    rock: '#3d382c',
+    fairy: '#f59ab5',
+    poison: '#9a81eb',
+    bug: '#acc278',
+    ghost: '#b69adb',
+    dragon: '#97c4be',
     psychic: '#eaeda1',
-    fighting: '#e6e0d4',
-    flying: '#c6c6c6'
+    fighting: '#31574b',
+    flying: '#ace3e8'
   }[type] || normal
 }
 
@@ -30,7 +30,7 @@ const getPokemonsInfo = async (results, info) => {
 
   switch (info) {
     case 'types':
-      return pokemons.map(fulfilled => fulfilled.types.map(info => info.type.name))
+      return pokemons.map(fulfilled => fulfilled.types.map(info => DOMPurify.sanitize(info.type.name)))
       break;
 
     case 'sprites-png':
@@ -65,7 +65,7 @@ const getPokemonsIds = pokeApiResults => pokeApiResults.map(({ url }) => {
 
 const getPokemons = async () => {
   try {
-    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10&offset=0')
+    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151&offset=0')
 
     if (!response.ok) {
       throw new Error('No Pokémon around...')
@@ -93,8 +93,64 @@ const getPokemons = async () => {
   }
 }
 
-const renderPokemons = () => {
-  
+const renderPokemons = pokemons => {
+  //const ul = document.querySelector('[data-js="pokemons-list"]')
+  const pokeList = document.querySelector('.poke__list')
+
+  const fragment = document.createDocumentFragment()
+
+  pokemons.forEach(({ id, name, types, imgUrl }) => {
+    //const li = document.createElement('li')
+    const [firstType] = types
+    const pokeCard = document.createElement('div')
+    pokeCard.setAttribute('class', `${firstType} poke__card`)
+    pokeCard.style.setProperty('--type-color', getTypeColor(firstType))
+
+    const pokeImg = document.createElement('img')
+    pokeImg.setAttribute('class', 'poke__img')
+    pokeImg.setAttribute('src', imgUrl)
+    pokeImg.setAttribute('alt', name)
+    
+    const cardInfo = document.createElement('div')
+    cardInfo.setAttribute('class', 'card__info')
+
+    const pokeNumberBox = document.createElement('div')
+    pokeNumberBox.setAttribute('class', 'poke__number-box')
+    
+    
+    const pokeNumber = document.createElement('h4')
+    pokeNumber.setAttribute('class', '.poke__number')
+    pokeNumber.textContent = `#${id}`
+
+    
+    const pokeInfo = document.createElement('div')
+    pokeInfo.setAttribute('class', 'poke__info')
+
+    for (let i = 0; i < types.length; i++) {
+      const pokeType = document.createElement('p')
+      pokeType.setAttribute('class', 'poke__type')
+      pokeType.style.setProperty('--type-color', getTypeColor(types[i]))
+      pokeType.textContent = types[i]
+      pokeInfo.append(pokeType)
+    }    
+    
+    const pokeName = document.createElement('h2')
+    pokeName.setAttribute('class', 'poke__name')
+    pokeName.textContent= `${name[0].toUpperCase()}${name.slice(1)}`
+    
+    pokeCard.append(pokeImg)
+    pokeNumberBox.append(pokeNumber)
+    cardInfo.append(pokeNumberBox)
+    cardInfo.append(pokeInfo)
+    pokeCard.append(cardInfo)
+    pokeCard.append(pokeName)
+    
+    
+    console.log(pokeCard)
+    fragment.append(pokeCard)    
+  })
+
+  pokeList.append(fragment)
 }
 
 const handlePageLoaded = async () => {
@@ -131,11 +187,4 @@ const getPokemonImgs = async ids => {
 
 * But I'm getting the sprites on the same function of the types, so it's not necessary
  */
-
-/* const pokeList = document.querySelector('.poke__list');
-const pokeCard = document.querySelector('.poke__card');
-const pokeImg = document.querySelector('.poke__img');
-const pokeName = document.querySelector('.poke__name');
-const pokeNumber = document.querySelector('.poke__number');
-*/
 
