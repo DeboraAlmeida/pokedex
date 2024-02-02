@@ -19,7 +19,9 @@ html, body {
 
 header {
   width: 100%;
-  padding: 1rem;
-  background-color: #f00d;
-  border-bottom: 1px solid #000;
+  padding: 2rem;
+  /* background: linear-gradient(175deg, red 0 37%, hsl(10, 82%, 53%) 40%, #a62c2b 46%, red 100%); */
+  background: linear-gradient(red, #a62c2b);
+    /* #f00d; */
+  border-bottom: 1.5rem solid #000;
 }
