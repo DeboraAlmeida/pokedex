@@ -165,8 +165,8 @@ const getPokemons = async () => {
       return
     }
 
-    const { results: pokeApiResults, count } = await response.json()
-
+    const { results: pokeApiResults } = await response.json()
+    
     const pokeIds = getPokemonsIds(pokeApiResults) // using this function to avoid another request in getPokemonInfo(pokeApiResults, 'id')
     const types = await getPokemonsInfo(pokeApiResults, 'types')
     const spritesPng = await getPokemonsInfo(pokeApiResults, 'sprites-png')
@@ -197,6 +197,7 @@ const getPokemons = async () => {
 
 const renderPokemons = pokemons => {
   const pokeList = document.querySelector('[data-js="pokemons-list"]')
+  const count = document.querySelector('.poke__count')
 
   const fragment = document.createDocumentFragment()
 
@@ -244,10 +245,11 @@ const renderPokemons = pokemons => {
     pokeCard.append(cardInfo)
     pokeCard.append(pokeName)
     
-    fragment.append(pokeCard)    
+    fragment.append(pokeCard)  
   })
 
   pokeList.append(fragment)
+  count.textContent = `${total} Pokémon listed:`
 }
 
 const observeLastPokemon = pokemonObserver => {

@@ -11,6 +11,7 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   font-family: 'Oxanium', monospace;
+  list-style: none;
 }
 
 html, body {
@@ -20,8 +21,41 @@ html, body {
 header {
   width: 100%;
   padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   /* background: linear-gradient(175deg, red 0 37%, hsl(10, 82%, 53%) 40%, #a62c2b 46%, red 100%); */
   background: linear-gradient(red, #a62c2b);
     /* #f00d; */
-  border-bottom: 1.5rem solid #000;
+  border-bottom: 2rem solid #000;
+  position: relative;
+}
+
+button {
+  width: 7rem;
+  height: 7rem;
+  border: 1.7rem solid #000;
+  border-radius: 50%;
+  position: absolute;
+  top: 13.1rem;
+  box-shadow: inset -2px -2px 3px #555;
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+@media screen and (min-width: 569px) {
+  button {
+    width: 9.5rem;
+    height: 9.5rem;
+    border: 2.7rem solid #000;
+    top: 14rem;
+    font-size: 1.2rem;
+  }
+
+  header {
+    border-bottom: 3.5rem solid #000;
+    position: relative;
+  }
 }
