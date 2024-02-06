@@ -195,6 +195,28 @@ const getPokemons = async () => {
   }
 }
 
+const showPokemonModal = (card) => {
+  const modalOverlay = document.querySelector('.modal')
+  modalOverlay.style.display = "block"
+  const modalContainer = document.querySelector('.poke__modal-container')
+  const pokemonCard = document.createElement('div')
+  pokemonCard.append(card.cloneNode(true))
+  modalContainer.append(pokemonCard)
+  const close = document.querySelector('.close')
+  close.onclick = function() {
+    modalOverlay.style.display = "none";
+    pokemonCard.remove()
+  }
+  modalContainer.onclick = function() {
+    modalOverlay.style.display = "none";
+    pokemonCard.remove()
+  }
+  modalOverlay.onclick = function() {
+    modalOverlay.style.display = "none";
+    pokemonCard.remove()
+  }
+}
+
 const renderPokemons = pokemons => {
   const pokeList = document.querySelector('[data-js="pokemons-list"]')
   const count = document.querySelector('.poke__count')
@@ -244,6 +266,11 @@ const renderPokemons = pokemons => {
     cardInfo.append(pokeInfo)
     pokeCard.append(cardInfo)
     pokeCard.append(pokeName)
+
+    pokeCard.addEventListener('click', function() {
+      const card = pokeCard
+      showPokemonModal(card)
+    })
     
     fragment.append(pokeCard)  
   })
