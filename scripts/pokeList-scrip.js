@@ -6,27 +6,14 @@ let controlOffset = 0
 let extra = total % limit
 let control = total - limit - extra
 
-/* const getTypeColor = type => {
-  const normal = '#84918d';
-  return {
-    normal,
-    fire: '#eb542a',
-    grass: '#a1fc79',
-    ice: '#89bed9',
-    electric: '#fcc347',
-    water: '#4270d4',
-    ground: '#695833',
-    rock: '#3d382c',
-    fairy: '#f59ab5',
-    poison: '#9a81eb',
-    bug: '#acc278',
-    ghost: '#b69adb',
-    dragon: '#97c4be',
-    psychic: '#eaeda1',
-    fighting: '#31574b',
-    flying: '#ace3e8'
-  }[type] || normal
-} */
+const pokeList = document.querySelector('[data-js="pokemons-list"]')
+const fragment = document.createDocumentFragment()
+
+const form = document.querySelector('form')
+const input = document.querySelector('input')
+const buttonGo = document.querySelector('#go')
+
+const msg = document.getElementById('msg')
 
 const getTypeColor = (type, att) => {
   const normal = {
@@ -166,7 +153,6 @@ const getPokemons = async () => {
     }
 
     const { results: pokeApiResults } = await response.json()
-    
     const pokeIds = getPokemonsIds(pokeApiResults) // using this function to avoid another request in getPokemonInfo(pokeApiResults, 'id')
     const types = await getPokemonsInfo(pokeApiResults, 'types')
     const spritesPng = await getPokemonsInfo(pokeApiResults, 'sprites-png')
@@ -217,61 +203,64 @@ const showPokemonModal = (card) => {
   }
 }
 
+const createCard = (id, name, types, imgUrl) => {
+  const [firstType] = types
+  const pokeCard = document.createElement('div')
+  pokeCard.setAttribute('class', `${firstType} poke__card`)
+  pokeCard.style.setProperty('--type-color', getTypeColor(firstType, 'color'))
+
+  const pokeImg = document.createElement('img')
+  pokeImg.setAttribute('class', 'poke__img')
+  pokeImg.setAttribute('src', imgUrl)
+  pokeImg.setAttribute('alt', name)
+  
+  const cardInfo = document.createElement('div')
+  cardInfo.setAttribute('class', 'card__info')
+
+  const pokeNumberBox = document.createElement('div')
+  pokeNumberBox.setAttribute('class', 'poke__number-box')
+  
+  
+  const pokeNumber = document.createElement('h4')
+  pokeNumber.setAttribute('class', '.poke__number')
+  pokeNumber.textContent = `#${id}`
+  
+  const pokeInfo = document.createElement('div')
+  pokeInfo.setAttribute('class', 'poke__info')
+
+  for (let i = 0; i < types.length; i++) {
+    const pokeType = document.createElement('p')
+    pokeType.setAttribute('class', 'poke__type')
+    pokeType.style.setProperty('--type-color', getTypeColor(types[i], 'opacity'))
+    pokeType.textContent = types[i]
+    pokeInfo.append(pokeType)
+  }    
+  
+  const pokeName = document.createElement('h2')
+  pokeName.setAttribute('class', 'poke__name')
+  pokeName.textContent= `${name[0].toUpperCase()}${name.slice(1)}`
+  
+  pokeCard.append(pokeImg)
+  pokeNumberBox.append(pokeNumber)
+  cardInfo.append(pokeNumberBox)
+  cardInfo.append(pokeInfo)
+  pokeCard.append(cardInfo)
+  pokeCard.append(pokeName)
+
+  pokeCard.addEventListener('click', function() {
+    const card = pokeCard
+    showPokemonModal(card)
+  })
+
+  return pokeCard
+}
+
 const renderPokemons = pokemons => {
-  const pokeList = document.querySelector('[data-js="pokemons-list"]')
   const count = document.querySelector('.poke__count')
 
-  const fragment = document.createDocumentFragment()
 
   pokemons.forEach(({ id, name, types, imgUrl }) => {
-    const [firstType] = types
-    const pokeCard = document.createElement('div')
-    pokeCard.setAttribute('class', `${firstType} poke__card`)
-    pokeCard.style.setProperty('--type-color', getTypeColor(firstType, 'color'))
-
-    const pokeImg = document.createElement('img')
-    pokeImg.setAttribute('class', 'poke__img')
-    pokeImg.setAttribute('src', imgUrl)
-    pokeImg.setAttribute('alt', name)
-    
-    const cardInfo = document.createElement('div')
-    cardInfo.setAttribute('class', 'card__info')
-
-    const pokeNumberBox = document.createElement('div')
-    pokeNumberBox.setAttribute('class', 'poke__number-box')
-    
-    
-    const pokeNumber = document.createElement('h4')
-    pokeNumber.setAttribute('class', '.poke__number')
-    pokeNumber.textContent = `#${id}`
-    
-    const pokeInfo = document.createElement('div')
-    pokeInfo.setAttribute('class', 'poke__info')
-
-    for (let i = 0; i < types.length; i++) {
-      const pokeType = document.createElement('p')
-      pokeType.setAttribute('class', 'poke__type')
-      pokeType.style.setProperty('--type-color', getTypeColor(types[i], 'opacity'))
-      pokeType.textContent = types[i]
-      pokeInfo.append(pokeType)
-    }    
-    
-    const pokeName = document.createElement('h2')
-    pokeName.setAttribute('class', 'poke__name')
-    pokeName.textContent= `${name[0].toUpperCase()}${name.slice(1)}`
-    
-    pokeCard.append(pokeImg)
-    pokeNumberBox.append(pokeNumber)
-    cardInfo.append(pokeNumberBox)
-    cardInfo.append(pokeInfo)
-    pokeCard.append(cardInfo)
-    pokeCard.append(pokeName)
-
-    pokeCard.addEventListener('click', function() {
-      const card = pokeCard
-      showPokemonModal(card)
-    })
-    
+    const pokeCard = createCard(id, name, types, imgUrl)    
     fragment.append(pokeCard)  
   })
 
@@ -307,6 +296,37 @@ const handlePageLoaded = async () => {
   renderPokemons(pokemons)
   handleNextPokemonsRender()
 }
+
+const renderPokemonSearch = async (pokemon) => {
+  try {
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`)
+    
+    if (!response.ok) {
+      throw new Error('Pokémon not found...')
+      return
+    }
+    
+    const data = await response.json()
+    const types = data.types.map(info => DOMPurify.sanitize(info.type.name))
+    const imgs = Object.entries(data.sprites.other)
+    const officialArt = imgs[2][1].front_default
+    const homeArt = imgs[1][1].front_default
+    const sprite = officialArt !== null ? officialArt : homeArt
+    const card = createCard(data.id, data.name, types, sprite )
+    input.value = ''
+    showPokemonModal(card)
+
+  } catch (error) {
+    input.value = ''
+    alert('Pokémon not found. Try again')
+    console.log('Oops..', error)    
+  }
+}
+
+form.addEventListener('submit', (event) => {
+  event.preventDefault()
+  renderPokemonSearch(input.value)
+})
 
 handlePageLoaded()
 

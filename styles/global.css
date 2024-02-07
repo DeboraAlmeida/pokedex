@@ -47,13 +47,13 @@ button {
   button {
     width: 9.5rem;
     height: 9.5rem;
-    border: 2.7rem solid #000;
+    border: 2.5rem solid #000;
     top: 14rem;
     font-size: 1.2rem;
   }
 
   header {
-    border-bottom: 3.5rem solid #000;
+    border-bottom: 3rem solid #000;
     position: relative;
   }
 }
