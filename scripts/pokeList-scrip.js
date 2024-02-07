@@ -325,7 +325,7 @@ const renderPokemonSearch = async (pokemon) => {
 
 form.addEventListener('submit', (event) => {
   event.preventDefault()
-  renderPokemonSearch(input.value)
+  renderPokemonSearch(input.value.toLowerCase())
 })
 
 handlePageLoaded()
